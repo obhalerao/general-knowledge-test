@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.widget.Button;
 import android.view.View;
 import android.util.Log;
@@ -172,13 +173,33 @@ public class MainActivity extends AppCompatActivity {
             entry1.setEnabled(true);
             button1.setText(getString(R.string.click_button));
             button1.setOnClickListener(getName);
+            entry1.setOnKeyListener(getNameKey);
 
         }
     };
 
+    View.OnKeyListener getNameKey = new View.OnKeyListener() {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if(keyCode == KeyEvent.KEYCODE_ENTER  && event.getAction() == KeyEvent.ACTION_DOWN) {
+                button1.setOnClickListener(null);
+                playerName = entry1.getText().toString();
+                entry1.setText("");
+                timeLeft.setText(getString(R.string.time, "" + formatTime.format(duration / 100)));
+                points.setText(getString(R.string.points, "" + pointVal));
+                newQ.onClick(v);
+                return true;
+            }
+            return false;
+        }
+    };
+
+
+
     View.OnClickListener getName = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            entry1.setOnKeyListener(null);
             playerName = entry1.getText().toString();
             entry1.setText("");
             timeLeft.setText(getString(R.string.time, ""+formatTime.format(duration/100)));
@@ -270,15 +291,50 @@ public class MainActivity extends AppCompatActivity {
                 text1.setText(String.format("Question %s:\n%s", currIdx + 1, questions[indices.get(currIdx)]));
                 button1.setText(getString(R.string.click_button));
                 button1.setOnClickListener(response);
+                entry1.setOnKeyListener(responseKey);
             }
+        }
+    };
+
+    View.OnKeyListener responseKey = new View.OnKeyListener() {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+            if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+                button1.setOnClickListener(null);
+                timer.cancel();
+
+
+                currAns = entry1.getText().toString().toLowerCase().trim();
+                entry1.setVisibility(View.GONE);
+                timeLeft.setVisibility(View.GONE);
+                points.setVisibility(View.GONE);
+                entry1.setEnabled(false);
+                entry1.setText("");
+                if (currAns.equals(answers[indices.get(currIdx)].toLowerCase()) && duration > 0) {
+                    layout.setBackgroundColor(Color.GREEN);
+                    long points = Math.round((double) pointVal * (.5 + .5 * ((double) duration / (double) (max_duration))));
+                    text1.setText(getString(R.string.right, points));
+                    score += points;
+
+                } else {
+                    layout.setBackgroundColor(Color.RED);
+                    text1.setText(String.format("%s The correct answer is %s.", getString(R.string.wrong), answers[indices.get(currIdx)]));
+                }
+                scorebox.setText(String.format("Score: %s", score));
+                button1.setText(getString(R.string.click_button_continue));
+                button1.setOnClickListener(newQ);
+                return true;
+            }
+            return false;
         }
     };
 
     View.OnClickListener response = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            entry1.setOnKeyListener(null);
             timer.cancel();
-            timer.purge();
+
 
 
             currAns = entry1.getText().toString().toLowerCase().trim();
