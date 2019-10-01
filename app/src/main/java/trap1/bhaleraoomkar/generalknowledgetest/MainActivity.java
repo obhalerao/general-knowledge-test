@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     TextView rules;
     TextView points;
     ConstraintLayout layout;
+    Button changeQuestions;
 
     String[] questions = new String[]{"What is 1 + 1?",
             "What state is Chicago in?",
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     TreeSet<Entry> leaderboard = new TreeSet<Entry>(Collections.<Entry>reverseOrder());
     String playerName = "";
     int numQuestions = 10;
-    int pointVal = 1000;
+    int pointVal = (int)(500.0 * (((Math.log(20.0/numQuestions)) / (Math.log(10.0)))+1));
     int currIdx = -1;
     String currAns = "";
     int score = 0;
@@ -359,6 +361,15 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    View.OnClickListener changeNumQ = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getApplicationContext(), ChangeQuestionsActivity.class);
+            intent.putExtra(getString(R.string.currQ), numQuestions);
+            startActivityForResult(intent, 0);
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -394,8 +405,12 @@ public class MainActivity extends AppCompatActivity {
         points = (TextView)findViewById(R.id.points);
         layout = (ConstraintLayout)findViewById(R.id.layout);
         hello = (TextView)findViewById(R.id.hello);
+        changeQuestions = (Button)findViewById(R.id.changeQuestions);
         button1.setOnClickListener(reset);
         resetButton.setOnClickListener(resetLeaderboard);
+        changeQuestions.setOnClickListener(changeNumQ);
+
+        rules.setText(getString(R.string.rules, numQuestions, pointVal));
 
 
 
