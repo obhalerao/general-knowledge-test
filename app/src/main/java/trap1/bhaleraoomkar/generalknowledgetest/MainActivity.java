@@ -14,6 +14,9 @@ import android.view.View;
 import android.util.Log;
 import android.widget.*;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.text.DecimalFormat;
 
 import java.util.*;
@@ -126,6 +129,9 @@ public class MainActivity extends AppCompatActivity {
 
     SharedPreferences sharedPref;
     SharedPreferences.Editor editor;
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference myRef = database.getReference("message");
 
 
 
@@ -382,6 +388,8 @@ public class MainActivity extends AppCompatActivity {
         changeQuestions.setOnClickListener(changeNumQ);
 
         rules.setText(getString(R.string.rules, numQuestions, pointVal));
+
+        myRef.setValue("Hello world!");
 
 
 
