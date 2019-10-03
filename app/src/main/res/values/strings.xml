@@ -8,7 +8,7 @@
     <string name="right">Correct! You earned %d points.</string>
     <string name="name_enter">Please enter your name.</string>
     <string name="wrong">Incorrect!</string>
-    <string name="high_scores_key">com.trap1.quizapp.sharedprefs</string>
+    <string name="high_scores_key">com.trap1.generalknowledgetest.sharedprefs</string>
     <string name="time">Time Left: %s\n</string>
     <string name="points">Points for This Question: %s</string>
     <string name="game_over">Game over!</string>
@@ -17,8 +17,9 @@
     <string name="end">End</string>
     <string name="change_questions">Change Number of Questions</string>
     <string name="num_questions">Number of Questions</string>
-    <string name="currQ">com.trap1.quizapp.currQ</string>
+    <string name="currQ">com.trap1.generalknowledgetest.currQ</string>
+    <string name="newNumQ">com.trap1.generalknowledgetest.newNumQ</string>
     <string name="out_of_time">You ran out of time! Press \"Continue\" to continue playing.</string>
-    <string name="rules">You will be given %d questions and 20 seconds each to answer them. The questions have an initial point value of %d points, but the longer you take to answer them, the fewer points you will get. If you run out of time on a question, you receive 0 points for it, but can move on to the next question.</string>
+    <string name="rules">You will be given %d question(s) and 20 seconds each to answer them. The questions have an initial point value of %d points, but the longer you take to answer them, the fewer points you will get. If you run out of time on a question, you receive 0 points for it, but can move on to the next question.</string>
     <string name="title_activity_change_questions">ChangeQuestionsActivity</string>
 </resources>

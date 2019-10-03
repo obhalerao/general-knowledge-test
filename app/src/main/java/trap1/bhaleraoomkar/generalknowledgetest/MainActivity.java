@@ -170,29 +170,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             hello.setVisibility(View.INVISIBLE);
+            changeQuestions.setVisibility(View.GONE);
             text1.setText(getString(R.string.name_enter));
             entry1.setVisibility(View.VISIBLE);
+            rules.setVisibility(View.VISIBLE);
             entry1.setEnabled(true);
             button1.setText(getString(R.string.click_button));
             button1.setOnClickListener(getName);
-            entry1.setOnKeyListener(getNameKey);
 
-        }
-    };
-
-    View.OnKeyListener getNameKey = new View.OnKeyListener() {
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if(keyCode == KeyEvent.KEYCODE_ENTER  && event.getAction() == KeyEvent.ACTION_DOWN) {
-                button1.setOnClickListener(null);
-                playerName = entry1.getText().toString();
-                entry1.setText("");
-                timeLeft.setText(getString(R.string.time, "" + formatTime.format(duration / 100)));
-                points.setText(getString(R.string.points, "" + pointVal));
-                newQ.onClick(v);
-                return true;
-            }
-            return false;
         }
     };
 
@@ -206,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
             entry1.setText("");
             timeLeft.setText(getString(R.string.time, ""+formatTime.format(duration/100)));
             points.setText(getString(R.string.points, ""+pointVal));
+            rules.setVisibility(View.GONE);
             newQ.onClick(v);
         }
     };
@@ -225,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 toast.show();
             }
             resetButton.setVisibility(View.VISIBLE);
+            changeQuestions.setVisibility(View.VISIBLE);
             long time = System.currentTimeMillis();
             String endString = String.format("Final Score: %s\n\nTop 5 scores:\n", score);
             String saveString = "";
@@ -293,43 +280,10 @@ public class MainActivity extends AppCompatActivity {
                 text1.setText(String.format("Question %s:\n%s", currIdx + 1, questions[indices.get(currIdx)]));
                 button1.setText(getString(R.string.click_button));
                 button1.setOnClickListener(response);
-                entry1.setOnKeyListener(responseKey);
             }
         }
     };
 
-    View.OnKeyListener responseKey = new View.OnKeyListener() {
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-                button1.setOnClickListener(null);
-                timer.cancel();
-
-
-                currAns = entry1.getText().toString().toLowerCase().trim();
-                entry1.setVisibility(View.GONE);
-                timeLeft.setVisibility(View.GONE);
-                points.setVisibility(View.GONE);
-                entry1.setEnabled(false);
-                entry1.setText("");
-                if (currAns.equals(answers[indices.get(currIdx)].toLowerCase()) && duration > 0) {
-                    layout.setBackgroundColor(Color.GREEN);
-                    long points = Math.round((double) pointVal * (.5 + .5 * ((double) duration / (double) (max_duration))));
-                    text1.setText(getString(R.string.right, points));
-                    score += points;
-
-                } else {
-                    layout.setBackgroundColor(Color.RED);
-                    text1.setText(String.format("%s The correct answer is %s.", getString(R.string.wrong), answers[indices.get(currIdx)]));
-                }
-                scorebox.setText(String.format("Score: %s", score));
-                button1.setText(getString(R.string.click_button_continue));
-                button1.setOnClickListener(newQ);
-                return true;
-            }
-            return false;
-        }
-    };
 
     View.OnClickListener response = new View.OnClickListener() {
         @Override
@@ -369,6 +323,23 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, 0);
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 0) {
+            if(resultCode == RESULT_OK){
+                numQuestions = data.getIntExtra(getString(R.string.newNumQ), 10);
+                pointVal = (int)(500.0 * (((Math.log(20.0/numQuestions)) / (Math.log(10.0)))+1));
+                rules.setText(getString(R.string.rules, numQuestions, pointVal));
+                Context context = getApplicationContext();
+                String text = String.format("Number of questions set to %d.", numQuestions);
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+            }
+        }
+    }
 
 
     @Override
